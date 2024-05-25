@@ -195,6 +195,20 @@ body a {
   .dropdown-submenu.pull-left {
       float: none;
   }
+  .aqi{
+    height: 37vh;
+  }
+  .container {
+    display: flex;
+    justify-content: center;
+    align-items: center; /* Adjust as needed */
+  }
+  
+  .data-item {
+    margin: auto;
+    /* You can add other styling here */
+  }
+  
   
   .dropdown-submenu.pull-left>.dropdown-menu {
       left: -100%;

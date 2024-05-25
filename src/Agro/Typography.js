@@ -13,34 +13,32 @@ import Footer from "./Footer";
 import NavBar from "./NavBar";
 import HeaderRight from "./HeaderRight";
 const firebaseConfig = {
-  apiKey: "AIzaSyAgGRwbMMcDLKqDwyHjBcPkqby55xqE7IY",
-  authDomain: "ezeagros.firebaseapp.com",
-  databaseURL: "https://ezeagros-default-rtdb.firebaseio.com",
-  projectId: "ezeagros",
-  storageBucket: "ezeagros.appspot.com",
-  messagingSenderId: "439167074452",
-  appId: "1:439167074452:web:3c7d7e9ceb86451e2f3481",
-  measurementId: "G-BWYQHFVQXD",
+  apiKey: "AIzaSyCvcsp8asTwPVh-MZJVo7Fyk7kdpj9RlQw",
+  authDomain: "as-farm-8ac6b.firebaseapp.com",
+  databaseURL: "https://as-farm-8ac6b-default-rtdb.firebaseio.com",
+  projectId: "as-farm-8ac6b",
+  storageBucket: "as-farm-8ac6b.appspot.com",
+  messagingSenderId: "776343559491",
+  appId: "1:776343559491:web:8941ff12e555ba6438a3f6",
 };
 
 let Typography = () => {
-  const [locust, setLocust] = useState("yes");
   const [temperature, setTemperature] = useState("22 ℃");
   const [humidity, setHumidity] = useState("10%");
   const [aqi, setAqi] = useState("100 ppm");
-  const [flames, setFlames] = useState(0);
   const [soilTemperature, setSoilTemperature] = useState("00 ℃");
   const [soilMoisture, setSoilMoisture] = useState("0%");
-  const [soilTemperaturenode2, setSoilTemperaturenode2] = useState("00 ℃");
-  const [soilMoisturenode2, setSoilMoisturenode2] = useState("0%");
+  const [led, setLed] = useState("false");
+  const [light, setLight] = useState("false");
 
   const thresholds = {
-    temperature: 40,
+    temperature: 10,
     locustcheck: "Yes",
-    humidity: 50,
+    humidity: 1,
     flames: 1,
+    aqi: 10,
     soilTemperature: 40,
-    soilMoisture: 40,
+    soilMoisture: 400,
     soilTemperatureNode2: 40,
     soilMoistureNode2: 40,
   };
@@ -57,10 +55,10 @@ let Typography = () => {
   const [isBlinkingSm, setBlinkingSm] = useState(false);
   const [isBlinkingSt2, setBlinkingSt2] = useState(false);
   const [isBlinkingSm2, setBlinkingSm2] = useState(false);
-  // const [audioT, setAudioT] = useState(new Audio("/Sounds/Emergency.mp3"));
-  const [audioL, setAudioL] = useState(new Audio("/Sounds/Emergency.mp3"));
+  const [audioT, setAudioT] = useState(new Audio("/Sounds/Emergency.mp3"));
+  // const [audioL, setAudioL] = useState(new Audio("./Emergency.mp3"));
   // const [audioH, setAudioH] = useState(new Audio("/Sounds/Emergency.mp3"));
-  const [audioF, setAudioF] = useState(new Audio('/Sounds/Emergency.mp3'));
+  // const [audioF, setAudioF] = useState(new Audio("/Sounds/Emergency.mp3"));
   const app = initializeApp(firebaseConfig);
   const database = getDatabase(app);
   // const audio = new Audio("/Sounds/Emergency.mp3");
@@ -72,19 +70,14 @@ let Typography = () => {
         const data = snapshot.val();
         // console.log(data);
         if (data) {
-          let locustAnswer =
-            data.LOCUST === 0 ? "No" : data.LOCUST === 1 ? "Yes" : "Undefined";
+          setTemperature(`${data.Surrounding_Temperature} ℃`);
 
-          setTemperature(`${data.temperature} ℃`);
-
-          setSoilTemperature(`${data.Soil_Temperature_Node1} ℃`);
-          setSoilTemperaturenode2(`${data.Soil_Temperature_Node1} ℃`);
-          setAqi(`${data.CO} ppm`);
-          setSoilMoisture(`${data.Soil_Moisture_Node1}%`);
-          setSoilMoisturenode2(`${data.Soil_Moisture_Node1}%`);
-          setHumidity(`${data.humidity}%`);
-          setLocust(`${locustAnswer}`);
-          setFlames(`${data.Fire}`);
+          setSoilTemperature(`${data.Soil_Temperature} ℃`);
+          setAqi(`${data.AQI} ppm`);
+          setLed(`${data.LED}`);
+          setSoilMoisture(`${data.Moisture_Percentage}%`);
+          setHumidity(`${data[" Surrounding_Humidity"]}%`);
+          setLight(`${data.Light}`);
         } else {
           console.error("Snapshot is null");
         }
@@ -107,87 +100,38 @@ let Typography = () => {
       } else {
         console.log("tempdown");
         // audioT.pause();
-        // audioT.currentTime = 0;
+        audioT.currentTime = 0;
         setBlinkingTe(false);
       }
     }
-    if (locust) {
-      if (locust == thresholds.locustcheck) {
-        console.log("locust");
-        audioL.play();
-        setBlinkingLc(true);
-      } else {
-        audioL.pause();
-        audioL.currentTime = 0;
-        setBlinkingLc(false);
-      }
-    }
     if (humidity) {
-      if (parseInt(humidity) > thresholds.humidity) {
-        console.log("humidity");
-        // audioH.play();
+      const hVal = parseFloat(humidity.split(" ")[0]);
+      if (hVal > thresholds.humidity) {
+        console.log("soil temperature");
         setBlinkingHu(true);
       } else {
-        // audioH.pause();
-        // audioH.currentTime = 0;
         setBlinkingHu(false);
       }
     }
-    if (flames) {
-      if (flames == thresholds.flames) {
-        console.log("flames");
-        audioF.play();
-        setBlinkingFl(true);
-      } else {
-        audioF.pause();
-        audioF.currentTime = 0;
-        setBlinkingFl(false);
-      }
-    }
-    if (soilTemperature) {
-      if (soilTemperature > thresholds.soilTemperature) {
+    if (aqi) {
+      const aqiVal = parseFloat(aqi.split(" ")[0]);
+      if (aqiVal > thresholds.aqi) {
         console.log("soil temperature");
-        setBlinkingSt(true);
+        setBlinkingLc(true);
       } else {
-        setBlinkingSt(false);
+        setBlinkingLc(false);
       }
     }
     if (soilMoisture) {
-      if (soilMoisture > thresholds.soilMoisture) {
-        console.log("Temperature is above 10 degrees.");
+      const smVal = parseFloat(soilMoisture.split(" ")[0]);
+      if (smVal < thresholds.soilMoisture) {
+        console.log("Temperature SMMM.");
         setBlinkingSm(true);
       } else {
         setBlinkingSm(false);
       }
     }
-    if (soilTemperaturenode2) {
-      if (soilTemperaturenode2 > thresholds.soilTemperaturenode2) {
-        console.log("Temperature is above 10 degrees.");
-        setBlinkingSt2(true);
-      } else {
-        setBlinkingSt2(false);
-      }
-    }
-    if (soilMoisturenode2) {
-      if (soilMoisturenode2 > thresholds.soilMoisturenode2) {
-        console.log("Temperature is above 10 degrees.");
-        setBlinkingSm2(true);
-      } else {
-        setBlinkingSm2(false);
-      }
-    }
-  }, [
-    audioL,
-    audioF,
-    temperature,
-    locust,
-    humidity,
-    flames,
-    soilTemperature,
-    soilMoisture,
-    soilTemperaturenode2,
-    soilMoisturenode2,
-  ]);
+  }, [audioT, temperature, humidity, soilTemperature, soilMoisture]);
 
   useEffect(() => {
     const updateCropInfo = () => {
@@ -276,7 +220,7 @@ let Typography = () => {
                   <a href="/">
                     EzeAgro{" "}
                     <span>
-                      <sup> </sup>
+                      <sup>Ezebudies</sup>
                     </span>
                   </a>
                 </h1>
@@ -301,12 +245,12 @@ let Typography = () => {
 
       <div className="data-head">Sensor's Real Time Reading</div>
       <div className="data-container">
-        <div className={`data-item ${isBlinkingLc ? "blinking" : ""}`}>
+        {/* <div className={`data-item ${isBlinkingLc ? "blinking" : ""}`}>
           <h2>Locus</h2>
           <p className="value" id="Locust">
             {locust}
           </p>
-        </div>
+        </div> */}
         <div className={`data-item ${isBlinkingTe ? "blinking" : ""}`}>
           <h2>Surrounding Temp.</h2>
           <p className="value" id="temperature">
@@ -319,37 +263,41 @@ let Typography = () => {
             {humidity}
           </p>
         </div>
-        <div className={`data-item`}>
-          <h2>CO</h2>
+        <div className={`data-item aqi ${isBlinkingLc ? "blinking" : ""}`}>
+          <h2>AQI</h2>
           <p className="value" id="AQI">
             {aqi}
           </p>
         </div>
-        <div className={`data-item ${isBlinkingFl ? "blinking" : ""}`}>
-          <h2>Flames</h2>
-          <p className="value" id="Flame">
-            {flames}
+        <div className={`data-item`}>
+          <h2>LED</h2>
+          <p className="value" id="AQI">
+            {led}
+          </p>
+          <h2>Light</h2>
+          <p className="value" id="AQI">
+            {light}
           </p>
         </div>
-      </div>
-      <div>
+        <div className="container">
+          <div className={`data-item ${isBlinkingSm ? "blinking" : ""}`}>
+            <h2>Soil Moisture</h2>
+            <p className="value" id="AQI">
+              {soilMoisture}
+            </p>
+            <h2>Soil Temperature</h2>
+            <p className="value" id="AQI">
+              {soilTemperature}
+            </p>
+          </div>
+        </div>
         {/* First Block */}
-        <div className="data-container1">
+        {/* <div className="data-container1">
           <div
             className={`data-item1 ${
               isBlinkingSm || isBlinkingSt ? "blinking" : ""
             }`}
-          >
-            <h3>Node1Values</h3>
-            <h2>Soil Moisture</h2>
-            <p className="value" id="Soil_Moisture">
-              {soilMoisturenode2}
-            </p>
-            <h2>soilTemprature</h2>
-            <p className="value" id="AQI">
-              {soilTemperaturenode2}
-            </p>
-          </div>
+          ></div>
           <div
             className={`data-item ${
               isBlinkingSm2 || isBlinkingSt2 ? "blinking" : ""
@@ -365,8 +313,15 @@ let Typography = () => {
               {soilTemperature}
             </p>
           </div>
-        </div>
-
+        </div> */}
+        {/* <div className={`data-item ${isBlinkingFl ? "blinking" : ""}`}>
+          <h2>Flames</h2>
+          <p className="value" id="Flame">
+            {flames}
+          </p>
+        </div> */}
+      </div>
+      <div>
         <style
           dangerouslySetInnerHTML={{
             __html: `
