@@ -56,7 +56,7 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
                                 <div className="w3layouts-logo">
                                     <h1>
                                         <a href="/">
-                                            Signodes{" "}
+                                            AS FARM{" "}
                                             <span>
                                                 <sup> </sup>
                                             </span>
