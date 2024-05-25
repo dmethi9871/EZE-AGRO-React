@@ -32,13 +32,13 @@ let Typography = () => {
   const [light, setLight] = useState("false");
 
   const thresholds = {
-    temperature: 10,
+    temperature: 30,
     locustcheck: "Yes",
-    humidity: 1,
+    humidity: 60,
     flames: 1,
-    aqi: 10,
-    soilTemperature: 40,
-    soilMoisture: 400,
+    aqi: 100,
+    soilTemperature: 30,
+    soilMoisture: 10,
     soilTemperatureNode2: 40,
     soilMoistureNode2: 40,
   };
