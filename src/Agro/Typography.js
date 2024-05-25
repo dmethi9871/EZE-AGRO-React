@@ -218,9 +218,9 @@ let Typography = () => {
               <div className="w3layouts-logo">
                 <h1>
                   <a href="/">
-                    EzeAgro{" "}
+                   AS FARM{" "}
                     <span>
-                      <sup>Ezebudies</sup>
+                      <sup></sup>
                     </span>
                   </a>
                 </h1>
